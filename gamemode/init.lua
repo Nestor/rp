@@ -13,6 +13,7 @@ AddCSLuaFile( "cl_vehicle.lua")
 AddCSLuaFile('admin/ban.lua')
 AddCSLuaFile('admin/kick.lua')
 AddCSLuaFile('admin/freeze.lua')
+AddCSLuaFile('cl_chat.lua')
 
 include( "sh_entity.lua" )
 include( "sh_player.lua" )

@@ -18,6 +18,7 @@ include('cl_inventory.lua')
 include('cl_admin.lua')
 include('cl_font.lua')
 include('cl_vehicle.lua')
+include('cl_chat.lua')
 
 include('vgui/amountmenu.lua')
 include('vgui/actionmenu.lua')
