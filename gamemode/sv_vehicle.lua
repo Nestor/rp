@@ -3,13 +3,13 @@ local Player = FindMetaTable("Player")
 local BuyCarPos = { { Pos = Vector(4364.31, -5898.44, 55.78), Ang = Angle(0, 158.55, 0.18) }  }
 
 function Player:SpawnVehicle(id, color, pos, ang)
-	if self.SpawnedVehicle then self:Notify("Already a car spawned") return end
+	if self.SpawnedVehicle then self:Notify("Already a car spawned", 2) return end
 	local vehicle = ents.Create("prop_vehicle_jeep")
 		vehicle:SetPos(pos)
 		vehicle:SetAngles(ang)
 		vehicle:SetModel(VEHICLE_DB[id].Model)
 		vehicle:SetColor(color)
-		vehicle:SetKeyValue("vehiclescript", "scripts/vehicles/"..VEHICLE_DB[id].Script..".txt")
+		vehicle:SetKeyValue("vehiclescript", "scripts/vehicles/rp_"..VEHICLE_DB[id].Script..".txt")
 		vehicle:Setowner(self)
 		vehicle.SeatDB = { }
 		vehicle.ExitPoint = VEHICLE_DB[id].ExitPoint
@@ -18,9 +18,11 @@ function Player:SpawnVehicle(id, color, pos, ang)
 			local seats = ents.Create("prop_vehicle_prisoner_pod")
 				seats:SetKeyValue("vehiclescript", "scripts/vehicles/prisoner_pod.txt")
 				seats:SetModel("models/nova/airboat_seat.mdl")
-				seats:SetPos(vehicle:GetPos()+v)
+				seats:SetPos(vehicle:GetPos()+vehicle:GetRight()*v.x+vehicle:GetForward()*v.y+vehicle:GetUp()*v.z)
+				seats:SetAngles(vehicle:GetAngles())
 				seats:SetParent(vehicle)
 				seats:SetNoDraw(true)
+				seats.ID = k + 1
 			seats:Spawn()
 			vehicle.SeatDB[k] = seats
 		end
@@ -68,9 +70,8 @@ function Player:BuyVehicle(vehid, color)
 end
 
 function Player:RemoveCar()
-	self.Vehicles = {}
-
 	self.SpawnedVehicle:Remove()
+	self.SpawnedVehicle = nil
 end
 function Player:HasVehicle(vehid)
 	for k,v in pairs(self.Vehicles) do
@@ -95,10 +96,10 @@ end
 function Player:SendVehicles()
 	for k,v in pairs(self.Vehicles) do
 		net.Start("vehicles")
-			net.WriteInt(v.ID, 32)
-			net.WriteInt(v.color.r, 32)
-			net.WriteInt(v.color.g, 32)
-			net.WriteInt(v.color.b, 32)
+			net.WriteInt(k, 32)
+			net.WriteInt(v.Color.r, 32)
+			net.WriteInt(v.Color.g, 32)
+			net.WriteInt(v.Color.b, 32)
 		net.Send(self)
 	end
 end
@@ -122,22 +123,13 @@ net.Receive("buy_car", function(len, ply)
 
 	ply:BuyVehicle(carid, color)
 end)
-/*
-function GM:PlayerEnteredVehicle(ply, veh)
-	
-end
-function GM:CanPlayerEnterVehicle(ply, veh)
-
-end*/
 
 function GM:PlayerLeaveVehicle(ply, veh)
 	if veh:GetParent() ~= NULL then
-		print(veh:GetParent())
-		ply:SetPos(veh:GetParent():GetRight() + veh:GetParent().ExitPoint)
+		ply:SetPos(veh:GetParent():GetPos() + veh:GetParent():GetRight() * veh:GetParent().ExitPoint[veh.ID].x + veh:GetParent():GetForward() * veh:GetParent().ExitPoint[veh.ID].y + veh:GetParent():GetUp() * veh:GetParent().ExitPoint[veh.ID].z)
 		return
 	end
-	print(veh:EyeAngles())
-	ply:SetPos(veh:GetPos()+veh.ExitPoint)
+	ply:SetPos(veh:GetPos()+veh:GetRight() * veh.ExitPoint[1].x+veh:GetForward() * veh.ExitPoint[1].y + veh:GetUp() * veh.ExitPoint[1].z)
 end
 
 -----------------

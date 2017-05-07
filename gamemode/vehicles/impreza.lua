@@ -11,11 +11,16 @@ Vehicle.Model = "models/lonewolfie/subaru_22b.mdl"
 Vehicle.Price = 150000
 
 Vehicle.PassengerSeats = {	Vector(-15.80, -4.71, 16.57),
-							Vector(-17.12, -39.16, 20.75),
-							Vector(0.23, -39.16, 20.75),
-							Vector(18.12, -39.16, 20.75)}
+							Vector(-17.12, -39.16, 5),
+							Vector(0.23, -39.16, 5)}
 
-Vehicle.ExitPoint = Vector(-65.29, -11.18, 39.22)
+Vehicle.ExitPoint = { 	Vector(60, 2.44, 34.16),
+						Vector(-65.29, -11.18, 39.22),
+						Vector(-65.29, -11.18, 39.22),
+						Vector(60, 2.44, 34.16),
+						Vector(60, 2.44, 34.16),
+						Vector(60, 2.44, 34.16)}
+
 
 Vehicle.LookAt = Vector(33, 0, 0)
 

@@ -57,8 +57,8 @@ end)
 
 GM.CreateInventory()
 
-function camdoor()
-	for k, v in pairs(ents.GetAll()) do
+hook.Add("PostDrawOpaqueRenderables", "camdoor", function()
+	for k, v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 200)) do
 		if v:IsDoor() && LocalPlayer():GetPos():Distance(v:GetPos()) < 100 && not v:IsVehicle() then
 			if v:GetNWEntity("owner") ~= NULL then
 				local ang = v:GetAngles()
@@ -82,8 +82,8 @@ function camdoor()
 			end
 		end
 	end
-end
-hook.Add("PostDrawOpaqueRenderables", "camdoor", camdoor)
+end)
+
 
 hook.Add( "HUDShouldDraw", "hide hud", function( name )
 	 if ( name == "CHudHealth" || name == "CHudBattery" || name == "CHudAmmo" || name == "CHudSecondaryAmmo" ) || name == "CHudCrosshair" then
